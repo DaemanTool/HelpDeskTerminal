@@ -1,16 +1,21 @@
 package com.project;
 
+// Импорт библиотек и т.п.
 import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 
+// Создаем основной класс
 public class HelpDeskApp {
+    // Константы с данными от базы данных
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "admin_user";
     private static final String DB_PASSWORD = "K5abba";
 
+    // Основной метод main (Начало тут)
     public static void  main(String[] args) {
+        // Пытаемся подключить драййвер Postgre
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -19,9 +24,11 @@ public class HelpDeskApp {
             return;
         }
 
+        // Создаем соединение и сканер для консоли
         try (Scanner scanner = new Scanner(System.in);
              Connection connection = createConnection()) {
             System.out.println("===== Helpdesk App =====");
+            // Бесконечный цикл в меню терминала
             while (true) {
 
                 System.out.println("1. Создать заявку");
@@ -31,9 +38,11 @@ public class HelpDeskApp {
                 System.out.println("5. Выход");
                 System.out.print("Выберите действие: ");
 
+                // Сканируем следующий int
                 int choice = scanner.nextInt();
                 scanner.nextLine(); // очистка буфера
 
+                // Реализация выбора меню
                 switch (choice) {
                     case 1:
                         createTicket(connection, scanner);
@@ -61,6 +70,7 @@ public class HelpDeskApp {
 
     }
 
+    // Подключение к БД
     private static Connection createConnection() throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", DB_USER);
@@ -69,6 +79,7 @@ public class HelpDeskApp {
         return DriverManager.getConnection(DB_URL, props);
     }
 
+    // Создать заявление (Аккуратнее, в бд должен быть пользователь и статус "Открыт")
     private static void createTicket(Connection conn, Scanner scanner) throws SQLException {
         System.out.println("\n--- Создание новой заявки ---");
 
@@ -97,6 +108,7 @@ public class HelpDeskApp {
                     "VALUES (?, ?, (SELECT user_id FROM users WHERE full_name = ?), " +
                     "(SELECT status_id FROM ticket_statuses WHERE name = 'Открыт'), ?)";
 
+            // Реализация SQL запроса через JDBC
             try (PreparedStatement ticketStmt = conn.prepareStatement(insertTicketSQL,
                     Statement.RETURN_GENERATED_KEYS)) {
 
@@ -134,6 +146,7 @@ public class HelpDeskApp {
         }
     }
 
+    // Посмотреть заявления
     private static void viewTickets(Connection conn) throws SQLException {
         System.out.println("\n--- Список заявок ---");
 
@@ -161,6 +174,7 @@ public class HelpDeskApp {
         }
     }
 
+    // Добавить комментарий
     private static void addComment(Connection conn, Scanner scanner) throws SQLException {
         System.out.println("\n--- Добавление комментария ---");
 
