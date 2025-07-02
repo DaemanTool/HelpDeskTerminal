@@ -15,7 +15,7 @@ public class HelpDeskApp {
 
     // Основной метод main (Начало тут)
     public static void  main(String[] args) {
-        // Пытаемся подключить драййвер Postgre
+        // Пытаемся подключить драйвер Postgre
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
